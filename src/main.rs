@@ -1,9 +1,14 @@
-use advent_of_code_22::day_one::get_max_calories_by_elf;
+use advent_of_code_22::day_one::{
+    get_max_calories_by_elf, get_three_largest_calorie_amounts_by_elf, prepare_input, INPUT,
+};
+use std::time::Instant;
 
 fn main() {
-    let calories = get_max_calories_by_elf("res/day_one.txt");
-    println!(
-        "The elf carrying the most calories is carrying: {} in total.",
-        calories.unwrap()
-    );
+    let before = Instant::now();
+    let input = prepare_input(INPUT);
+
+    let top_three_results = get_three_largest_calorie_amounts_by_elf(input).unwrap();
+    let sum = top_three_results[0] + top_three_results[1] + top_three_results[2];
+    println!("The top three elfs were carrying: {:#?}", sum);
+    println!("time elasped: {:.2?}", before.elapsed());
 }
