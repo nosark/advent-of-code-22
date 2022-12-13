@@ -158,13 +158,21 @@ pub fn get_score_with_new_rules(
 
 #[cfg(test)]
 mod tests {
-    use super::{get_score, prepare_input, INPUT_DAY_TWO};
+    use super::{get_score, get_score_with_new_rules, prepare_input, INPUT_DAY_TWO};
 
     #[test]
-    fn test_score_sum() {
+    fn solve_part_one() {
         let input = prepare_input(INPUT_DAY_TWO);
         let result = get_score(input).unwrap();
 
         assert_eq!(result, 14375);
+    }
+
+    #[test]
+    fn solve_part_two() {
+        let input = prepare_input(INPUT_DAY_TWO);
+        let result = get_score_with_new_rules(input).unwrap();
+
+        assert_eq!(result, 10274);
     }
 }
