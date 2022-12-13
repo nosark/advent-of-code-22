@@ -53,6 +53,16 @@ impl From<&str> for HandShape {
     }
 }
 
+impl From<HandShape> for Outcome {
+    fn from(shape: HandShape) -> Outcome {
+        match shape {
+            HandShape::Rock => Outcome::Loss,
+            HandShape::Paper => Outcome::Draw,
+            HandShape::Scissors => Outcome::Win,
+        }
+    }
+}
+
 impl TryFrom<(HandShape, HandShape)> for Outcome {
     type Error = ();
     fn try_from(value: (HandShape, HandShape)) -> Result<Self, Self::Error> {
@@ -67,6 +77,25 @@ impl TryFrom<(HandShape, HandShape)> for Outcome {
             (HandShape::Scissors, HandShape::Paper) => Ok(Outcome::Loss),
             (HandShape::Scissors, HandShape::Scissors) => Ok(Outcome::Draw),
         }
+    }
+}
+
+impl TryFrom<(HandShape, Outcome)> for HandShape {
+    type Error = ();
+    fn try_from(value: (HandShape, Outcome)) -> Result<Self, Self::Error> {
+        let result = match value {
+            (HandShape::Rock, Outcome::Loss) => HandShape::Scissors,
+            (HandShape::Rock, Outcome::Draw) => HandShape::Rock,
+            (HandShape::Rock, Outcome::Win) => HandShape::Paper,
+            (HandShape::Paper, Outcome::Loss) => HandShape::Rock,
+            (HandShape::Paper, Outcome::Draw) => HandShape::Paper,
+            (HandShape::Paper, Outcome::Win) => HandShape::Scissors,
+            (HandShape::Scissors, Outcome::Loss) => HandShape::Paper,
+            (HandShape::Scissors, Outcome::Draw) => HandShape::Scissors,
+            (HandShape::Scissors, Outcome::Win) => HandShape::Rock,
+        };
+
+        Ok(result)
     }
 }
 
@@ -114,10 +143,28 @@ pub fn get_score(input: Vec<(HandShape, HandShape)>) -> Result<u32, std::num::Pa
     Ok(score)
 }
 
+pub fn get_score_with_new_rules(
+    input: Vec<(HandShape, HandShape)>,
+) -> Result<u32, std::num::IntErrorKind> {
+    let mut score: u32 = 0;
+    for round in input {
+        let encrypted_outcome = Outcome::from(round.1);
+        let hand_to_throw = HandShape::try_from((round.0, encrypted_outcome));
+        score += u32::from(hand_to_throw.unwrap()) + u32::from(encrypted_outcome);
+    }
+
+    Ok(score)
+}
+
 #[cfg(test)]
 mod tests {
+    use super::{get_score, prepare_input, INPUT_DAY_TWO};
+
     #[test]
     fn test_score_sum() {
-        assert_eq!(0, 0)
+        let input = prepare_input(INPUT_DAY_TWO);
+        let result = get_score(input).unwrap();
+
+        assert_eq!(result, 14375);
     }
 }
