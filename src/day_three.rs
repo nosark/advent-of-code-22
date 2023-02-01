@@ -1,4 +1,4 @@
-use std::{collections::HashSet, sync::Mutex};
+use std::collections::{HashSet, HashMap};
 
 /// Need to read each line and split line into two strings ( compartments )
 /// Then, we compare each string to identify the item that is duplicated in both
@@ -28,11 +28,38 @@ pub fn group_lines_by_threes(input: &str) -> u32 {
     score
 }
 
-fn get_score_of_badge(value: &Vec<&str>) -> u32 {
-    let mut char_set = HashSet::<char>::new();
-    unimplemented!()    
+fn get_score_of_badge(values: &Vec<&str>) -> u32 {
+    let mut char_set = HashMap::<char, u32>::new();
+    let mut score = 0;
+    let mut found_flag = false; 
+    for value in values {
+        for letter in value.chars() {
+            char_set.entry(letter)
+                .and_modify(|e| {
+                    *e += 1;
+                    if *e == 3 {
+                        score = get_badge_score(letter as u8);
+                        found_flag = true;
+                    }
+                })
+                .or_insert(1);
+                if found_flag {
+                    break;
+                } 
+        }
+    }
+
+    score
 }
 
+fn get_badge_score(value: u8) -> u32 {
+    let mut score = 0;
+    match value.is_ascii_lowercase() {
+        true => score = value as u32 - 96,
+        false => score = value as u32 - 38,
+    }
+    score
+}
 
 fn split_string_into_compartments(value: &str) -> (&str, &str) {
     let middle = value.len() / 2;
@@ -60,10 +87,7 @@ fn find_unique_duplicate(value: (&str, &str)) -> u32 {
 
     for ch in value.1.bytes() {
         if char_set.contains(&ch) {
-            match ch.is_ascii_lowercase() {
-                true => score = ch as u32 - 96,
-                false => score = ch as u32 - 38,
-            }
+            score = get_badge_score(ch);    
             break;
         }
     }
@@ -74,6 +98,7 @@ fn find_unique_duplicate(value: (&str, &str)) -> u32 {
 mod tests {
     use super::get_item_priority_score;
     use super::prepare_input;
+    use super::group_lines_by_threes;
 
     const SAMPLE_TEST_CASE: &str = include_str!("../res/tests/day3_sample_test.txt");
     const INPUT: &str = include_str!("../res/day_three_input.txt");
@@ -89,6 +114,11 @@ mod tests {
         let input = prepare_input(INPUT);
         let result = get_item_priority_score(input).unwrap();
 
+        assert_eq!(result, 7824)
+    }
+
+    fn day_three_part_2_solve() {
+        let result = group_lines_by_threes(INPUT);
         assert_eq!(result, 7824)
     }
 }
