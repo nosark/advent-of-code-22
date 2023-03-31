@@ -2,9 +2,17 @@
 pub const INPUT: &str = include_str!("../res/day_one_input.txt");
 
 pub fn prepare_input(input: &str) -> Vec<u32> {
+    let os_type = std::env::consts::OS;
+    let mut split_token = " ";
+    match os_type {
+        "windows" => split_token = "\r\n",
+        "macos" => split_token = "\n\n",
+        _ => println!("something went wrong in determining the operating system"),
+    }
+
     input
         .trim()
-        .split("\n\n")
+        .split(split_token)
         .map(try_parse_and_sum_lines)
         .collect::<Result<_, _>>()
         .expect("failed to parse numbers")
