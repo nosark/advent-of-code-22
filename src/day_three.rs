@@ -110,6 +110,7 @@ mod tests {
         assert_eq!(result, 157)
     }
 
+    #[test]
     fn day_three_solve() {
         let input = prepare_input(INPUT);
         let result = get_item_priority_score(input).unwrap();
@@ -117,6 +118,7 @@ mod tests {
         assert_eq!(result, 7824)
     }
 
+    #[test]
     fn day_three_part_2_solve() {
         let result = group_lines_by_threes(INPUT);
         assert_eq!(result, 7824)

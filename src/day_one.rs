@@ -5,13 +5,13 @@ pub fn prepare_input(input: &str) -> Vec<u32> {
     let os_type = std::env::consts::OS;
     let mut split_token = " ";
     match os_type {
-        "windows" => split_token = "\r\n",
+        "windows" => split_token = "\r\n\r\n",
         "macos" => split_token = "\n\n",
         _ => println!("something went wrong in determining the operating system"),
     }
+    println!("{}", os_type);
 
     input
-        .trim()
         .split(split_token)
         .map(try_parse_and_sum_lines)
         .collect::<Result<_, _>>()
@@ -109,6 +109,7 @@ mod tests {
     fn get_top_three_clustered_no_singles() {
         let test_input = include_str!("../res/tests/test4_day1.txt");
         let input = prepare_input(test_input);
+        println!("{:?}", input);
         let results = get_three_largest_calorie_amounts_by_elf(input).unwrap();
 
         assert_eq!(results, [1200, 2700, 4000])
