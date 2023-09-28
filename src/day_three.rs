@@ -1,4 +1,4 @@
-use std::collections::{HashSet, HashMap};
+use std::collections::{HashMap, HashSet};
 
 /// Need to read each line and split line into two strings ( compartments )
 /// Then, we compare each string to identify the item that is duplicated in both
@@ -48,7 +48,7 @@ fn find_unique_duplicate(value: (&str, &str)) -> u32 {
 
     for ch in value.1.bytes() {
         if char_set.contains(&ch) {
-            score = get_badge_score(ch);    
+            score = get_badge_score(ch);
             break;
         }
     }
@@ -79,16 +79,19 @@ fn find_unique_duplicate_for_three(value: (&str, &str, &str)) -> u32 {
         }
     }
     score
-
 }
 
 fn get_item_priority_score_group_threes(input: &str) -> u32 {
-    let mut score : u32 = 0;
+    let mut score: u32 = 0;
     let lines: Vec<&str> = input.lines().collect();
     let mut i = 0;
     loop {
-        score += find_unique_duplicate_for_three((lines[i as usize], lines[i+1 as usize], lines[i+2 as usize]));
-        if i >= lines.len()-3 {
+        score += find_unique_duplicate_for_three((
+            lines[i as usize],
+            lines[i + 1 as usize],
+            lines[i + 2 as usize],
+        ));
+        if i >= lines.len() - 3 {
             break;
         } else {
             i += 3;
